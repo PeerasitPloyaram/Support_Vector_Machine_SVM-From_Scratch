@@ -1,0 +1,10 @@
+# Ignore Mac system files
+.DS_store
+
+__pycache__/
+
+archive-2/
+
+d/
+
+indev/
