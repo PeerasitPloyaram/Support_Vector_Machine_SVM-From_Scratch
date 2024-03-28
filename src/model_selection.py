@@ -1,15 +1,15 @@
-import math
 import numpy as np
+import pandas as pd
 
-def train_test_split(x, y, testsize=0.2, random_state=None, debug=False):
+def train_test_split(x, y, test_size=0.2, random_state=None, debug=False):
     # Validate parameter
-    if not type(testsize) == float or type(testsize) == int:
+    if not type(test_size) == float or type(test_size) == int:
         return 0
-    if testsize > 1 or testsize < 0:
+    if test_size > 1 or test_size < 0:
         return 0
 
-    test_size_ratio = testsize                  # test size ratio
-    train_size_ratio = 1 - testsize             # train size ratio
+    test_size_ratio = test_size                  # test size ratio
+    train_size_ratio = 1 - test_size             # train size ratio
 
     test_size = round(len(x) * test_size_ratio)     # test size
     train_size = round(len(x) * train_size_ratio)   # train size
@@ -43,31 +43,16 @@ def train_test_split(x, y, testsize=0.2, random_state=None, debug=False):
 
 
 
-def train_test_validate_split(x, y, testsize=None, validatesize=None)-> None:
-    train_size_ratio = 0.0
-    test_size_ratio = 0.0
-    validate_size_ratio = 0.0
+def standard_scaler(data):
+    df = pd.DataFrame(data) # Gen Frame
 
-    data_size = len(x)
-    a = x
-    b = y
+    for _ in df:
+        mean = df[_].mean() # Mean
+        std = df[_].std()   # Standard deviation
 
-    if testsize != None and validatesize != None:
-            # if testsize < 0.1 or testsize > 0.9 or validatesize < 0.1 or validatesize > 0.9:
-            #     return 0
-            # else:
-        test_size_ratio = testsize
-        validate_size_ratio = validatesize
-        train_size_ratio = "{:.2f}".format(1 - test_size_ratio - validate_size_ratio)
+        for i, sample in enumerate(df[_]):
+            z = ( sample - mean ) / std     # Create new data
+            df.loc[i, _] = z                # Replace at location
 
-        print(train_size_ratio, validate_size_ratio, test_size_ratio, data_size)
-
-    
-
-    test_size = math.floor(data_size * float(test_size_ratio))
-    validate_size = round(data_size * float(validate_size_ratio))
-    train_size = math.ceil(data_size * float(train_size_ratio))
-
-    print(train_size,validate_size,test_size)
-    print(train_size + test_size + validate_size)
+    return df.to_numpy()
         
