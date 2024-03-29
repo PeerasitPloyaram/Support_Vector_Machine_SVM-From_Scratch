@@ -6,58 +6,63 @@ class SVM:
         self.lambda_param = lambda_param
         self.c = c
         self.itr = max_itr
-        self.w = None # Weight
+        self.w = None           # Weight
 
-        if debug:
-            print("C: {}\nLearning Rate: {}\nLambda Param: {}\nC: {}\nN_Iters: {}".format(self.c, self.learningRate, self.lambda_param, self.c, self.itr))
+        self.debug = debug      # True / False
+        self.gradient_round = 0 # Gradient step
 
-    def add_bias_term(self, features):
+        if self.debug:
+            print("-- Parameter --\nC: {}\nLearning Rate: {}\nLambda Param: {}\nN_Iters: {}\n---------------".format(self.c, self.learningRate, self.lambda_param, self.itr))
+
+    def add_bias(self, features):
         n_samples = features.shape[0]
-        ones = np.ones((n_samples, 1))
-        return np.concatenate((ones, features), axis=1)
+        return np.concatenate( (np.ones((n_samples, 1)), features), axis=1 ) # [1, x1, x2 , ..., xn]
 
 
     def compute_gradient(self, sample, label):
         slack = 1 - label * np.dot(sample, self.w)  # yi(wxi) < 1
         n_feature = sample.shape[0]
 
-        gradient = np.zeros(n_feature) # Feature + b
+        gradient = np.zeros(n_feature)                 # feature + b
         if max(0, slack) == 0:
             gradient += (self.lambda_param * self.w)   # Yi(WXi) >=1
         else:
             gradient += (self.lambda_param * self.w) - (self.c * sample * label) # 1-Yi(WXi)
-
+        
+        self.gradient_round += 1
         return gradient
 
     def fit(self, x_train, y_train):
-        x_train = self.add_bias_term(x_train)
+        x_train = self.add_bias(x_train)
         index, x_sample = x_train.shape
         self.w = np.zeros(x_sample)
 
         for itr in range(self.itr):
             for index, x_sample in enumerate(x_train):
                 # Compute Gradient
-                gradient = self.compute_gradient(x_sample, y_train[index])
+                gradient = self.compute_gradient(x_sample, y_train[index])  # Find gradient
 
                 # Update Weight
-                self.w = self.w - self.learningRate * gradient
+                self.w -= self.learningRate * gradient  # Update new weight
+
+        if self.debug:
+            print("Gradient {} steps.".format(self.gradient_round))
 
     def predict(self, test_features):
-        test_features = self.add_bias_term(test_features)
-        
-        tt = []
-        n_samples = test_features.shape[0]
-        for index in range(n_samples):
-            prediction = np.sign(np.dot(self.w, test_features[index]))
-            tt.append(prediction)
-        return tt
-    
-    def score(self, y_predict, y_test):
-        
-        size = len(y_test)
-        counter = 0
-        for i, x in enumerate(y_predict):
-            if (y_predict[i] == y_test[i]):
-                counter += 1
+        test_features = self.add_bias(test_features)
+        buffer = []                                    # List for Y Predict
 
-        return counter / size
+        for x_sample in test_features:
+            prediction = np.sign(np.dot(self.w, x_sample))
+            buffer.append(prediction)
+
+        return buffer
+    
+    def score(self, x_test, y_test):        
+        counter = 0
+        predict = self.predict(x_test)
+
+        for index, sample_test in enumerate(predict):
+            if sample_test == y_test[index]:    # If equal +1
+                counter += 1
+        return counter / len(x_test)
