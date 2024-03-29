@@ -55,4 +55,32 @@ def standard_scaler(data):
             df.loc[i, _] = z                # Replace at location
 
     return df.to_numpy()
-        
+
+
+
+def positive_negative_check(y)-> None:
+
+    buff1=  y[0]
+    for _ in y:
+        if buff1 != _:
+            buff2 = _
+            break
+
+    if buff1 < buff2:
+        n_cl = buff1
+        p_cl = buff2
+    else:
+        n_cl = buff2
+        p_cl = buff1
+
+    p = 0
+    s = 0
+    for _ in y:
+        if _ == p_cl:
+            p += 1
+        else:
+            s += 1
+    
+    print("Positive Class [{}]: {} sample.".format(p_cl, p))
+    print("Negative Class [{}]: {} sample.".format(n_cl, s))
+    print("Total {} Samples.".format(p + s))
