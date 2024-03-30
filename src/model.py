@@ -27,10 +27,10 @@ class SVM:
         gradient = np.zeros(n_feature)  # feature + b
 
         if slack >= 1:   # if >=1 yi * (w * xi)
-            gradient += (self.lambda_param * self.w)
+            gradient = (self.lambda_param * self.w)
 
         else:            # if <1 1 - yi * (w * xi)
-            gradient += (self.lambda_param * self.w) - (sample * label)
+            gradient = (self.lambda_param * self.w) - (sample * label)
         
         self.gradient_round += 1
         return gradient
@@ -44,6 +44,10 @@ class SVM:
             for index, x_sample in enumerate(x_train):
                 # Compute Gradient
                 gradient = self.gradient(x_sample, y_train[index])  # Find gradient
+
+                if self.verbose == True:
+                    pass
+                    # print(gradient)
 
                 # Update Weight
                 self.w -= self.learningRate * gradient  # Update new weight
