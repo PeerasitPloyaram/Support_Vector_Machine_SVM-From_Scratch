@@ -85,7 +85,7 @@ class SVM:
         plt.figure(figsize=(10,5))
         plt.plot(self.cost_function)
 
-    def plot_accuracy(self, x_train, y_train, x_test, y_test, epoch):
+    def plot_accuracy(self, x_train, y_train, x_test, y_test):
         l1 = []
         l2 = []
         self.debug = False
@@ -100,8 +100,11 @@ class SVM:
 
 
         plt.figure(figsize=(10,5))
+        plt.title("Accuracy Curves")
         plt.plot(l1, label="Validation", marker='o')
         plt.plot(l2, label="Train", marker='x')
         plt.legend()
+        # plt.ylim(0.1,1)
         plt.xlabel('Epoch')
         plt.ylabel('Accuracy')
+        plt.show()
