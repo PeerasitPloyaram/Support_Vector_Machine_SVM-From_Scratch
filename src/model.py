@@ -1,7 +1,7 @@
 import numpy as np
 
 class SVM:
-    def __init__(self,kernel='linear', learning_rate=0.001, c=1,lambda_param=0.01 ,max_itr=1000, debug=False)-> None:
+    def __init__(self,kernel='linear', learning_rate=0.001, c=1,lambda_param=0.01 ,max_itr=1000, debug=False, verbose=False)-> None:
         self.learningRate = learning_rate
         self.lambda_param = lambda_param
         self.c = c
@@ -10,24 +10,27 @@ class SVM:
 
         self.debug = debug      # True / False
         self.gradient_round = 0 # Gradient step
+        self.verbose = verbose
 
         if self.debug:
             print("-- Parameter --\nC: {}\nLearning Rate: {}\nLambda Param: {}\nN_Iters: {}\n---------------".format(self.c, self.learningRate, self.lambda_param, self.itr))
 
     def add_bias(self, features):
-        n_samples = features.shape[0]
-        return np.concatenate( (np.ones((n_samples, 1)), features), axis=1 ) # [1, x1, x2 , ..., xn]
+        n_samples = len(features)
+        return np.concatenate( (np.ones((n_samples, 1)), features), axis=1 )
 
 
-    def compute_gradient(self, sample, label):
-        slack = 1 - label * np.dot(sample, self.w)  # yi(wxi) < 1
+    def gradient(self, sample, label):
+        slack = label * np.dot(self.w, sample)
+
         n_feature = sample.shape[0]
+        gradient = np.zeros(n_feature)  # feature + b
 
-        gradient = np.zeros(n_feature)                 # feature + b
-        if max(0, slack) == 0:
-            gradient += (self.lambda_param * self.w)   # Yi(WXi) >=1
-        else:
-            gradient += (self.lambda_param * self.w) - (self.c * sample * label) # 1-Yi(WXi)
+        if slack >= 1:   # if >=1 yi * (w * xi)
+            gradient += (self.lambda_param * self.w)
+
+        else:            # if <1 1 - yi * (w * xi)
+            gradient += (self.lambda_param * self.w) - (sample * label)
         
         self.gradient_round += 1
         return gradient
@@ -40,7 +43,7 @@ class SVM:
         for itr in range(self.itr):
             for index, x_sample in enumerate(x_train):
                 # Compute Gradient
-                gradient = self.compute_gradient(x_sample, y_train[index])  # Find gradient
+                gradient = self.gradient(x_sample, y_train[index])  # Find gradient
 
                 # Update Weight
                 self.w -= self.learningRate * gradient  # Update new weight
