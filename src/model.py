@@ -2,10 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class SVM:
-    def __init__(self,kernel='linear', learning_rate=0.001, c=1,lambda_param=0.01 ,max_itr=1000, debug=False, verbose=False)-> None:
+    def __init__(self,kernel='linear', learning_rate=0.001,lambda_param=0.01 ,max_itr=1000, debug=False, verbose=False)-> None:
         self.learningRate = learning_rate
         self.lambda_param = lambda_param
-        self.c = c
         self.epoch = max_itr
         self.w = None           # Weight
 
@@ -15,9 +14,10 @@ class SVM:
 
         self.cost_function = []
         self.plot = False
+        self.his_hige_loss = []
 
         if self.debug:
-            print("-- Parameter --\nC: {}\nLearning Rate: {}\nLambda Param: {}\nN_Iters: {}\n---------------".format(self.c, self.learningRate, self.lambda_param, self.epoch))
+            print("-- Parameter --\nLearning Rate: {}\nLambda Param: {}\nN_Iters: {}\n---------------".format(self.learningRate, self.lambda_param, self.epoch))
 
     def add_bias(self, features):
         n_samples = len(features)
@@ -52,7 +52,9 @@ class SVM:
                 # Update Weight
                 self.w -= self.learningRate * gradient  # Update new weight
 
-            cost_w = 1 / 2 * np.dot(self.w, self.w) + ( self.lambda_param * (sum(gradient) / len(x_sample)))
+            avr_gradient = sum(gradient) / len(x_sample)
+
+            cost_w = 1 / 2 * np.dot(self.w, self.w) + ( self.lambda_param * avr_gradient)
             self.cost_function.append(cost_w)
 
             if self.verbose == True:
@@ -60,6 +62,8 @@ class SVM:
             
         if self.debug:
             print("Gradient {} steps.".format(self.gradient_round))
+
+
 
     def predict(self, test_features):
         test_features = self.add_bias(test_features)
@@ -70,7 +74,9 @@ class SVM:
             buffer.append(prediction)
 
         return buffer
-    
+
+
+
     def score(self, x_test, y_test):        
         counter = 0
         predict = self.predict(x_test)
@@ -85,16 +91,20 @@ class SVM:
         plt.figure(figsize=(10,5))
         plt.plot(self.cost_function)
 
-    def plot_accuracy(self, x_train, y_train, x_test, y_test, epoch):
+
+
+    def plot_accuracy(self, x_train, y_train, x_test, y_test, epoch, verbose=False):
         l1 = []
         l2 = []
         self.debug = False
-        for i in epoch:
-            self.epoch = i
+        for _ in epoch:
+            self.epoch = _
             model = self.fit(x_train, y_train)
             score1 = self.score(x_test, y_test)
             score2 = self.score(x_train, y_train)
-            print("Epoch {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(i, score1, score2))
+            if verbose:
+                print("Epoch {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(_, score1, score2))
+
             l1.append(score1)
             l2.append(score2)
 
@@ -109,3 +119,36 @@ class SVM:
         plt.xlabel('Epochs')
         plt.ylabel('Accuracy (0 - 1)')
         plt.show()
+
+
+
+    def plot_lambda(self, x_train, y_train, x_test, y_test, lambda_param, epoch, verbose=False):
+        train = []
+        validate = []
+
+        self.debug = False
+
+        for i in lambda_param:
+            self.lambda_param = i
+            self.epoch = epoch
+            model = self.fit(x_train, y_train)
+
+            validate_score = self.score(x_test, y_test)
+            train_score = self.score(x_train, y_train)
+
+            if verbose:
+                print("Lambda {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(i, validate_score, train_score))
+
+            train.append(train_score)
+            validate.append(validate_score)
+
+        plt.figure(figsize=(10,5))
+        plt.title("Model accuracy [Epoch {}]".format(epoch))
+        plt.plot(validate, label="Validation", marker='o')
+        plt.plot(train, label="Train", marker='x')
+        plt.legend()
+        plt.grid(linestyle = '--', linewidth = 0.5)
+        plt.xticks(np.arange(len(lambda_param)), lambda_param)
+        plt.xlabel('Lambda')
+        plt.ylabel('Accuracy (0 - 1)')
+        plt.show()  
