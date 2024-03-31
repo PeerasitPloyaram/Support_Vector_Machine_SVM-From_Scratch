@@ -86,13 +86,16 @@ def positive_negative_check(y)-> None:
     print("Total {} Samples.".format(p + s))
 
 
-def random_under_sampling(data:pd, n_sample, randomState=None):
+def random_under_sampling(data, n_sample, random_state=None):
     size = len(data)
     print("Current Size:",size)
     delete_size = size - n_sample
-    print("Delete Size:",delete_size)
+    print("Delete Size Target:",delete_size)
 
     df = pd.DataFrame(data)
+    if random_state != None:
+        np.random.seed(random_state)
+        
     drop_index = np.random.choice(df.index, delete_size, replace=False)
     df_subset = df.drop(drop_index)
     return df_subset
