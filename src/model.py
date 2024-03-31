@@ -85,26 +85,27 @@ class SVM:
         plt.figure(figsize=(10,5))
         plt.plot(self.cost_function)
 
-    def plot_accuracy(self, x_train, y_train, x_test, y_test):
+    def plot_accuracy(self, x_train, y_train, x_test, y_test, epoch):
         l1 = []
         l2 = []
         self.debug = False
-        epoch = [1, 10 , 50 ,100 , 500, 1000, 1500,1600,1700,1800,1900,2000]
         for i in epoch:
             self.epoch = i
             model = self.fit(x_train, y_train)
             score1 = self.score(x_test, y_test)
             score2 = self.score(x_train, y_train)
+            print("Epoch {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(i, score1, score2))
             l1.append(score1)
             l2.append(score2)
 
 
         plt.figure(figsize=(10,5))
-        plt.title("Accuracy Curves")
+        plt.title("Model accuracy")
         plt.plot(l1, label="Validation", marker='o')
         plt.plot(l2, label="Train", marker='x')
         plt.legend()
-        # plt.ylim(0.1,1)
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
+        plt.grid(linestyle = '--', linewidth = 0.5)
+        plt.xticks(np.arange(len(epoch)), epoch)
+        plt.xlabel('Epochs')
+        plt.ylabel('Accuracy (0 - 1)')
         plt.show()
