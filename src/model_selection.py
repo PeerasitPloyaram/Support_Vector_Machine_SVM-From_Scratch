@@ -3,13 +3,13 @@ import pandas as pd
 
 def train_test_split(x, y, test_size=0.2, random_state=None, debug=False):
     # Validate parameter
-    if not type(test_size) == float or type(test_size) == int:
+    if not type(test_size) == float or type(test_size) == int:  # If not number
         return 0
-    if test_size > 1 or test_size < 0:
+    if test_size > 1 or test_size < 0:              # If max
         return 0
 
-    test_size_ratio = test_size                  # test size ratio
-    train_size_ratio = 1 - test_size             # train size ratio
+    test_size_ratio = test_size                     # test size ratio
+    train_size_ratio = 1 - test_size                # train size ratio
 
     test_size = round(len(x) * test_size_ratio)     # test size
     train_size = round(len(x) * train_size_ratio)   # train size
@@ -22,12 +22,12 @@ def train_test_split(x, y, test_size=0.2, random_state=None, debug=False):
         print("Train Size + Test Size: {}".format(train_size + test_size))
 
 
-    if random_state == None:                    # If don't have
-        seed = np.random.randint(0,1000000)     # random 0 - 1000000
+    if random_state == None:                            # If don't have
+        seed = np.random.randint(0,1000000)             # random 0 - 1000000
     elif type(random_state) == int and random_state > 0:
-        seed = random_state
+        seed = random_state     # set seed
     else:
-        return 0    # error, exit
+        return 0                # error, exit
 
     np.random.seed(seed)
     bufferX = np.random.permutation(x)
@@ -60,22 +60,23 @@ def standard_scaler(data):
 
 def positive_negative_check(y)-> None:
 
-    buff1=  y[0]
+    buff1=  y[0]        # Get first label
     for _ in y:
-        if buff1 != _:
-            buff2 = _
+        if buff1 != _:  # Find another label
+            buff2 = _   # If found break
             break
 
-    if buff1 < buff2:
+    if buff1 < buff2:   # Compare to correct class
         n_cl = buff1
         p_cl = buff2
     else:
         n_cl = buff2
         p_cl = buff1
 
-    p = 0
-    s = 0
-    for _ in y:
+    p = 0       # Counter positive class
+    s = 0       # Counter negative class
+
+    for _ in y:         # Count positve and negative class
         if _ == p_cl:
             p += 1
         else:
@@ -87,15 +88,16 @@ def positive_negative_check(y)-> None:
 
 
 def random_under_sampling(data, n_sample, random_state=None):
-    size = len(data)
+    size = len(data)                            # n_sample
+    delete_size = size - n_sample               # Cal size want to delete
+
     print("Current Size:",size)
-    delete_size = size - n_sample
     print("Delete Size Target:",delete_size)
 
     df = pd.DataFrame(data)
-    if random_state != None:
+    if random_state != None:            # Set random state
         np.random.seed(random_state)
         
-    drop_index = np.random.choice(df.index, delete_size, replace=False)
-    df_subset = df.drop(drop_index)
+    drop_index = np.random.choice(df.index, delete_size, replace=False) # Gen random index list
+    df_subset = df.drop(drop_index)     # Drop by random index
     return df_subset
