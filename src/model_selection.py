@@ -58,7 +58,7 @@ def standard_scaler(data):
 
 
 
-def positive_negative_check(y)-> None:
+def positive_negative_check(y):
 
     buff1=  y[0]        # Get first label
     for _ in y:
@@ -85,6 +85,8 @@ def positive_negative_check(y)-> None:
     print("Total {} Samples.".format(p + s))
     print("Positive Class [{}]: {} sample.".format(p_cl, p))
     print("Negative Class [{}]: {} sample.".format(n_cl, s))
+
+    return p, s
 
 
 def random_under_sampling(data, n_sample, random_state=None):
