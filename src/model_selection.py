@@ -81,10 +81,10 @@ def positive_negative_check(y)-> None:
             p += 1
         else:
             s += 1
-    
+            
+    print("Total {} Samples.".format(p + s))
     print("Positive Class [{}]: {} sample.".format(p_cl, p))
     print("Negative Class [{}]: {} sample.".format(n_cl, s))
-    print("Total {} Samples.".format(p + s))
 
 
 def random_under_sampling(data, n_sample, random_state=None):
