@@ -20,7 +20,7 @@ class SVM:
         if self.debug:
             print("-- Parameter --\nLearning Rate: {}\nLambda Param: {}\nN_Iters: {}\n---------------".format(self.learningRate, self.lambda_param, self.epoch))
 
-    def add_bias(self, features):                                               # add b to w for not compute b
+    def bias(self, features):                                               # add b to w for not compute b
         n_samples = len(features)
         return np.concatenate( (np.ones((n_samples, 1)), features), axis=1 )    # [1 , x1, x2, ..., xn]
 
@@ -41,8 +41,8 @@ class SVM:
         return gradient
 
     def fit(self, x_train, y_train):
-        x_train = self.add_bias(x_train)       # Add b in w
-        index, x_sample = x_train.shape        # get Index of sample, sample
+        x_train = self.bias(x_train)       # Add b in w
+        x_sample = x_train.shape[1]        # get Index of sample, sample
         self.w = np.zeros(x_sample)            # Set w size feature x
 
         for epoch in range(self.epoch):                             # Train Epoch round
@@ -67,7 +67,7 @@ class SVM:
 
 
     def predict(self, test_features):
-        test_features = self.add_bias(test_features)   # Add b to w
+        test_features = self.bias(test_features)   # Add b to w
         buffer = []                                    # List for y predict
 
         for x_sample in test_features:                 # Predict from list
@@ -78,8 +78,7 @@ class SVM:
                 buffer.append(1)
             else:
                 buffer.append(0)
-        return buffer
-
+        return buffer     
 
 
     def score(self, x_test, y_test):        
