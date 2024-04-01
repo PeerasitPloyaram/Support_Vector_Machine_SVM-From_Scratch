@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 class SVM:
     def __init__(self,kernel='linear', learning_rate=0.001,lambda_param=0.01 ,max_itr=1000, debug=False, verbose=False)-> None:
+        self.kernel = kernel
         self.learningRate = learning_rate
         self.lambda_param = lambda_param
         self.epoch = max_itr                # 1 epoch for n sample
