@@ -15,6 +15,7 @@ class SVM:
 
         # history for plot graph
         self.cost_function = []
+        self.zero_one_loss = []
 
 
         if self.debug:
@@ -42,10 +43,11 @@ class SVM:
 
     def fit(self, x_train, y_train):
         x_train = self.bias(x_train)       # Add b in w
-        x_sample = x_train.shape[1]        # get Index of sample, sample
-        self.w = np.zeros(x_sample)            # Set w size feature x
+        x_samples = x_train.shape[1]        # get Index of sample, sample
+        self.w = np.zeros(x_samples)            # Set w size feature x
 
         for epoch in range(self.epoch):                             # Train Epoch round
+            zr_oe_loss = 0
             for index, x_sample in enumerate(x_train):
                 # Compute Gradient
                 gradient = self.gradient(x_sample, y_train[index])  # Find gradient
@@ -53,13 +55,20 @@ class SVM:
                 # Update Weight
                 self.w -= self.learningRate * gradient              # Update new weight
 
+                # Save History Loss
+                predict = np.sign(np.dot(self.w, x_sample))
+                if predict != y_train[index]:
+                    zr_oe_loss += 1
+
             avr_gradient = sum(gradient) / len(x_sample)            # Find average gradient of array gradient
 
             cost_w = 1 / 2 * np.dot(self.w, self.w) + ( self.lambda_param * avr_gradient)   # Cal Cost(w) of regularization
-            self.cost_function.append(cost_w)
 
             if self.verbose == True:
                 print(cost_w)
+            
+            self.cost_function.append(cost_w)
+            self.zero_one_loss.append(zr_oe_loss)
             
         if self.debug:
             print("Gradient {} steps.".format(self.gradient_round))
@@ -156,3 +165,15 @@ class SVM:
         plt.xlabel('λ (Lambda)')
         plt.ylabel('Accuracy (0 - 1)')
         plt.show()  
+
+
+    def plot_loss(self):
+        plt.figure(figsize=(10,5))
+        plt.title("Training Loss")
+        plt.plot(self.zero_one_loss, label='Training Loss')
+        plt.xlabel('Epochs')
+        plt.legend()
+        plt.grid(linestyle = '--', linewidth = 0.5)
+        plt.ylabel('0 - 1 Loss')
+
+        plt.show()
