@@ -103,3 +103,26 @@ def random_under_sampling(data, n_sample, random_state=None):
     drop_index = np.random.choice(df.index, delete_size, replace=False) # Gen random index list
     df_subset = df.drop(drop_index)     # Drop by random index
     return df_subset
+
+
+def confusion_matrix(y_predict, y_test):
+    tp, tn, fp, fn = 0, 0, 0, 0
+
+    for index, y_p in enumerate(y_predict):
+        if y_p == y_test[index]:
+            if y_p == 1:
+                tp += 1
+            else:
+                tn += 1
+        else:
+            if y_p == -1 and y_test[index] == 1:
+                fn += 1
+            else:
+                fp += 1
+
+    precision = tp / (tp + fp)
+    acc = (tp + tn) / (tp + tn + fp +fn)
+    recall = tp / (tp + fn)
+    f1 = (2 * precision * recall) / (precision + recall)
+
+    print("Precision: {:.4f}\nRecall: {:.4f}\nAccuracy: {:.4f}\nF1-score: {:.4f}".format(precision, recall, acc, f1))
