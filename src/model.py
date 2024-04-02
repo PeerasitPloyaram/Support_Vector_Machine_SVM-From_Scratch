@@ -107,25 +107,27 @@ class SVM:
 
 
     def plot_accuracy(self, x_train, y_train, x_test, y_test, epoch, verbose=False):
-        l1 = []
-        l2 = []
-        self.debug = False
-        for _ in epoch:
-            self.epoch = _
+        test = []           # List predict
+        train = []
+        self.debug = False  # Set debug=False for no output
+
+        for _ in epoch:     # Loop epoch round
+            self.epoch = _  # Set epoch
             model = self.fit(x_train, y_train)
-            score1 = self.score(x_test, y_test)
-            score2 = self.score(x_train, y_train)
+            predict_test = self.score(x_test, y_test)
+            predict_train = self.score(x_train, y_train)
             if verbose:
-                print("Epoch {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(_, score1, score2))
+                print("Epoch {}\nValidate Accruacy is: {}\nTrain Accuracy is: {}".format(_, predict_test, predict_train))
 
-            l1.append(score1)
-            l2.append(score2)
+            test.append(predict_test)
+            train.append(predict_train)
 
 
+        # Plot graph
         plt.figure(figsize=(10,5))
         plt.title("Model accuracy")
-        plt.plot(l1, label="Validation", marker='o')
-        plt.plot(l2, label="Train", marker='x')
+        plt.plot(test, label="Validation", marker='o')
+        plt.plot(train, label="Train", marker='x')
         plt.legend()
         plt.grid(linestyle = '--', linewidth = 0.5)
         plt.xticks(np.arange(len(epoch)), epoch)
@@ -136,7 +138,7 @@ class SVM:
 
 
     def plot_lambda(self, x_train, y_train, x_test, y_test, lambda_param, epoch, verbose=False):
-        train = []
+        train = []          # List predict
         validate = []
 
         self.debug = False
@@ -155,6 +157,7 @@ class SVM:
             train.append(train_score)
             validate.append(validate_score)
 
+        # Plot graph
         plt.figure(figsize=(10,5))
         plt.title("Model accuracy [Epoch {}]".format(epoch))
         plt.plot(validate, label="Validation", marker='o')
@@ -169,8 +172,8 @@ class SVM:
 
     def plot_loss(self):
         plt.figure(figsize=(10,5))
-        plt.title("Training Loss")
-        plt.plot(self.zero_one_loss, label='Training Loss')
+        plt.title("SVM with Epoch[{}], λ[{}] Training Loss".format(self.epoch, self.lambda_param))
+        plt.plot(self.zero_one_loss, label='Training Loss')     # Plot from history 0-1 loss
         plt.xlabel('Epochs')
         plt.legend()
         plt.grid(linestyle = '--', linewidth = 0.5)
