@@ -1,5 +1,5 @@
 ## Project Introduction to Machine Learning
-โปรเจคนี้เป็นส่วนหนึ่งในรายวิชา Introductino to Machine Learning 01418362
+โปรเจคนี้เป็นส่วนหนึ่งในรายวิชา Introduction to Machine Learning 01418362
 จัดทำโดย นาย พีรสิษฐ์ พลอยอร่าม 6410451237
 <br>
 
@@ -38,6 +38,8 @@
 Directory 
 - data -> ที่อยุ่ของ DataSet
     - waterQuality1.csv
+- slide -> slide สำหรับการนำเสนอ
+    - waterQualityClassification_6410451237
 - src  -> ไฟล์หลัก
     - main_water_Quality1.ipynb -> ไฟล์ที่ใช้ในการทดอง
     - model_selection.py -> Libray ที่เขียนขึ้นเพื่อใช้ในในการทดลอง
@@ -45,3 +47,8 @@ Directory
 
 
 ## Support Vector Machine: SVM
+- Implement Linear SVM with Soft Margin
+- Default Paremeter:
+    - Learning Rate: 0.001
+    - Epoch: 1000
+    - Lambda: 0.01
