@@ -41,7 +41,7 @@ Directory
 - slide -> slide สำหรับการนำเสนอ
     - waterQualityClassification_6410451237
 - src  -> ไฟล์หลัก
-    - main_water_Quality1.ipynb -> ไฟล์ที่ใช้ในการทดอง
+    - main_water_Quality1.ipynb -> ไฟล์ที่ใช้ในการทดลอง
     - model_selection.py -> Libray ที่เขียนขึ้นเพื่อใช้ในในการทดลอง
     - model.py -> Model Classifier ที่ใช้ในการเรียนรู้โดยใช้ Linear SVM แบบ soft margin
 
