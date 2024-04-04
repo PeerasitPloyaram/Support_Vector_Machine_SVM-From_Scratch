@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 
 class SVM:
     def __init__(self,kernel='linear', learning_rate=0.001,lambda_param=0.01 ,epoch=1000, debug=False, verbose=False)-> None:
+        '''
+        Create by Peerasit Ployaram 6410451237
+        '''
+        
         self.kernel = kernel
         self.learningRate = learning_rate
         self.lambda_param = lambda_param
